@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>The C++ Frontend — PyTorch main documentation</title>
+  
+
+  
+  
+  
+  
+    <link rel="canonical" href="https://pytorch.org/docs/stable/frontend.html">
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css">
+  <!-- <link rel="stylesheet" href="_static/pygments.css" type="text/css" /> -->
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css">
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css">
+  <link rel="stylesheet" href="_static/cpp_theme.css" type="text/css">
+    <link rel="index" title="Index" href="genindex.html">
+    <link rel="search" title="Search" href="search.html">
+    <link rel="next" title="FAQ" href="notes/faq.html">
+    <link rel="prev" title="Installing C++ Distributions of PyTorch" href="installing.html">
+  <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','');</script>
+    <!-- End Google Tag Manager -->
+  
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+  <!-- Preload the theme fonts -->
+
+<link rel="preload" href="_static/fonts/FreightSans/freight-sans-book.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="_static/fonts/FreightSans/freight-sans-medium.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="_static/fonts/IBMPlexMono/IBMPlexMono-Medium.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="_static/fonts/FreightSans/freight-sans-bold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="_static/fonts/FreightSans/freight-sans-medium-italic.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="_static/fonts/IBMPlexMono/IBMPlexMono-SemiBold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+
+<!-- Preload the katex fonts -->
+
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Math-Italic.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Main-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Main-Bold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Size1-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Size4-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Size2-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Size3-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Caligraphic-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css" integrity="sha384-vSIIfh2YWi9wW0r9iZe7RJPrKwp6bG+s9QZMoITbCckVJqGCCRhc+ccxNcdpHuYu" crossorigin="anonymous">
+</head><body class="pytorch-body"><div class="container-fluid header-holder tutorials-header" id="header-holder">
+  <div class="container">
+    <div class="header-container">
+      <a class="header-logo" href="https://pytorch.org/" aria-label="PyTorch"></a>
+
+      <div class="main-menu">
+        <ul>
+
+          <li class="main-menu-item">
+          <div id="resourcesDropdownButton" data-toggle="resources-dropdown" class="resources-dropdown">
+              <a class="with-down-arrow">学习</a>
+              <div class="resources-dropdown-menu">
+                <a class="nav-dropdown-item" href="https://pytorch.org/get-started">
+                  <span class="dropdown-title">开始使用</span>
+                  <p>在本地运行 PyTorch 或快速开始使用支持的云平台之一</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/tutorials">
+                  <span class="dropdown-title">教程</span><p></p>
+                  <p>PyTorch 教程中有什么新内容</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/tutorials/beginner/basics/intro.html">
+                  <span class="dropdown-title">学习基础知识</span><p></p>
+                  <p>熟悉 PyTorch 的概念和模块</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/tutorials/recipes/recipes_index.html">
+                  <span class="dropdown-title">PyTorch 食谱</span><p></p>
+                  <p>精简版、可直接部署的 PyTorch 代码示例</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/tutorials/beginner/introyt.html">
+                  <span class="dropdown-title">PyTorch 入门 - YouTube 系列教程</span><p></p>
+                  <p>通过我们引人入胜的 YouTube 教程系列掌握 PyTorch 基础知识</p>
+                </a>
+              </div>
+            </div>
+          </li>
+
+          <li>
+          <div id="resourcesDropdownButton" data-toggle="resources-dropdown" class="resources-dropdown">
+              <a class="with-down-arrow">生态系统</a>
+              <div class="resources-dropdown-menu">
+                <a class="nav-dropdown-item" href="https://pytorch.org/ecosystem">
+                  <span class="dropdown-title">工具</span><p></p>
+                  <p>了解 PyTorch 生态系统中的工具和框架</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/#community-module">
+                  <span class="dropdown-title">社区</span>
+                  <p>加入 PyTorch 开发者社区，贡献、学习并获得问题解答</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://discuss.pytorch.org/" target="_blank">
+                  <span class="dropdown-title">论坛</span>
+                  <p>讨论 PyTorch 代码、问题、安装、研究的地方</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/resources">
+                  <span class="dropdown-title">开发者资源</span>
+                  <p>查找资源并解答问题</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/ecosystem/contributor-awards-2024">
+                  <span class="dropdown-title">贡献者奖项 - 2024</span><p></p>
+                  <p>今年 PyTorch 会议颁发的奖项揭晓</p>
+                </a>
+              </div>
+            </div>
+          </li>
+
+          <li>
+          <div id="resourcesDropdownButton" data-toggle="resources-dropdown" class="resources-dropdown">
+              <a class="with-down-arrow">边缘</a>
+              <div class="resources-dropdown-menu">
+                <a class="nav-dropdown-item" href="https://pytorch.org/edge">
+                  <span class="dropdown-title">关于 PyTorch Edge</span><p></p>
+                  <p>为边缘设备构建创新且注重隐私的 AI 体验</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/executorch-overview">
+                  <span class="dropdown-title">ExecuTorch</span><p></p>
+                  <p>针对移动和边缘设备实现设备端推理能力的端到端解决方案</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/executorch/stable/index.html">
+                  <span class="dropdown-title">ExecuTorch 文档</span><p></p>
+                </a>
+              </div>
+            </div>  
+          </li>
+
+          <li class="main-menu-item">
+            <div id="resourcesDropdownButton" data-toggle="resources-dropdown" class="resources-dropdown">
+              <a class="with-down-arrow">文档</a>
+              <div class="resources-dropdown-menu">
+                <a class="nav-dropdown-item" href="https://pytorch.org/docs/stable/index.html">
+                  <span class="dropdown-title">PyTorch</span><p></p>
+                  <p>查阅文档以获取全面指导，了解如何使用 PyTorch</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/pytorch-domains">
+                  <span class="dropdown-title">PyTorch 领域</span><p></p>
+                  <p>阅读 PyTorch 领域文档，了解更多关于特定领域库的信息</p>
+                </a>
+              </div>
+            </div>
+          </li>
+
+          <li>
+            <div id="resourcesDropdownButton" data-toggle="resources-dropdown" class="resources-dropdown">
+              <a class="with-down-arrow">博客与新闻</a>
+              <div class="resources-dropdown-menu">
+                <a class="nav-dropdown-item" href="https://pytorch.org/blog/">
+                  <span class="dropdown-title">PyTorch 博客</span><p></p>
+                  <p>捕捉最新的技术新闻和事件</p>
+                </a>
+                 <a class="nav-dropdown-item" href="https://pytorch.org/community-blog">
+                  <span class="dropdown-title">社区博客</span><p></p>
+                  <p>PyTorch 生态系统故事</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/videos">
+                  <span class="dropdown-title">视频</span><p></p>
+                  <p>了解最新的 PyTorch 教程、新内容等</p>
+                </a><a class="nav-dropdown-item" href="https://pytorch.org/community-stories">
+                  <span class="dropdown-title">社区故事</span><p></p>
+                  <p>了解我们的社区如何使用 PyTorch 解决真实、日常的机器学习问题</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/events">
+                  <span class="dropdown-title">活动信息</span><p></p>
+                  <p>查找活动、网络研讨会和播客</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/newsletter">
+                  <span class="dropdown-title">通讯</span><p></p>
+                  <p>跟踪最新更新</p>
+                </a>
+            </div>
+          </div></li>
+
+          <li>
+            <div id="resourcesDropdownButton" data-toggle="resources-dropdown" class="resources-dropdown">
+              <a class="with-down-arrow">关于</a>
+              <div class="resources-dropdown-menu">
+                <a class="nav-dropdown-item" href="https://pytorch.org/foundation">
+                  <span class="dropdown-title">PyTorch 基金会</span><p></p>
+                  <p>了解更多关于 PyTorch 基金会</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/governing-board">
+                  <span class="dropdown-title">管理委员会</span><p></p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/credits">
+                  <span class="dropdown-title">云信用计划</span><p></p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/tac">
+                  <span class="dropdown-title">技术顾问委员会</span><p></p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/staff">
+                  <span class="dropdown-title">员工</span><p></p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/contact-us">
+                  <span class="dropdown-title">联系我们</span><p></p>
+                </a>
+              </div>
+            </div>
+          </li>
+
+          <li class="main-menu-item">
+            <div class="no-dropdown">
+              <a href="https://pytorch.org/join" data-cta="join">成为会员</a>
+            </div>
+          </li>
+          <li>
+           <div class="main-menu-item">
+             <a href="https://github.com/pytorch/pytorch" class="github-icon">
+             </a>
+           </div>
+          </li>
+          <!--- TODO: This block adds the search icon to the nav bar. We will enable it later. 
+          <li>
+            <div class="main-menu-item">
+             <a href="https://github.com/pytorch/pytorch" class="search-icon">
+             </a>
+            </div>
+          </li>
+          --->
+        </ul>
+      </div>
+
+      <a class="main-menu-open-button" href="#" data-behavior="open-mobile-menu"></a>
+    </div>
+  </div>
+</div>
+
+
+
+   
+
+    
+
+    <div class="table-of-contents-link-wrapper">
+      <span>目录</span>
+      <a href="#" class="toggle-table-of-contents" data-behavior="toggle-table-of-contents"></a>
+    </div>
+
+    <nav data-toggle="wy-nav-shift" class="pytorch-left-menu" id="pytorch-left-menu">
+      <div class="pytorch-side-scroll">
+        <div class="pytorch-menu pytorch-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          <div class="pytorch-left-menu-search">
+            
+
+            
+              
+              
+                <div class="version">主页</div>
+              
+            
+
+            
+
+
+  
+
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search Docs">
+    <input type="hidden" name="check_keywords" value="yes">
+    <input type="hidden" name="area" value="default">
+  </form>
+</div>
+
+            
+          </div>
+
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installing.html">安装 PyTorch 的 C++ 发行版</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">C++ 前端</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">笔记</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="notes/faq.html">常见问题</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/inference_mode.html">推理模式</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/maybe_owned.html">MaybeOwned&lt;Tensor&gt;</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/tensor_basics.html">张量基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/tensor_creation.html">张量创建 API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/tensor_cuda_stream.html">张量 CUDA 流 API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/tensor_indexing.html">张量索引 API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/versioning.html">图书馆版本控制</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <div class="pytorch-container">
+      <div class="pytorch-page-level-bar" id="pytorch-page-level-bar">
+        <div class="pytorch-breadcrumbs-wrapper">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="pytorch-breadcrumbs">
+    
+      <li>
+        文档 &gt;</li>
+
+        
+      <li>C++ 前端</li>
+    
+    
+      <li class="pytorch-breadcrumbs-aside">
+        
+            
+            <a href="_sources/frontend.rst.txt" rel="nofollow"><img src="_static/images/view-page-source-icon.svg" width="16" height="16"></a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+</div>
+        </div>
+
+        <div class="pytorch-shortcuts-wrapper" id="pytorch-shortcuts-wrapper">快捷键</div>
+      </div>
+
+      <section data-toggle="wy-nav-shift" id="pytorch-content-wrap" class="pytorch-content-wrap">
+        <div class="pytorch-content-left">
+
+        
+          <!-- Google Tag Manager (noscript) -->
+          <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+          <!-- End Google Tag Manager (noscript) -->
+          
+          <div class="rst-content">
+          
+            <div role="main" class="main-content" itemscope="itemscope" itemtype="http://schema.org/Article">
+             <article itemprop="articleBody" id="pytorch-article" class="pytorch-article">
+              
+  <section id="the-c-frontend">
+<h1>C++ 前端 ¶</h1>
+<p>PyTorch C++前端是一个用于 CPU 和 GPU 张量计算的 C++17 库，具有自动微分和高级构建块，适用于最先进的机器学习应用。</p>
+<section id="description">
+<h2>描述 ¶</h2>
+<p>可以将 PyTorch C++前端视为 PyTorch Python 前端的 C++版本，提供自动微分和各种高级抽象，用于机器学习和神经网络。具体来说，它包括以下组件：</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>组件</p></th>
+<th class="head"><p>描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal "><span class="pre">torch::Tensor</span></code></p></td>
+<td><p>自动微分、高效支持 CPU 和 GPU 的张量</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal "><span class="pre">torch::nn</span></code></p></td>
+<td><p>用于神经网络建模的可组合模块集合</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal "><span class="pre">torch::optim</span></code></p></td>
+<td><p>用于训练模型的优化算法，如 SGD、Adam 或 RMSprop</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal "><span class="pre">torch::data</span></code></p></td>
+<td><p>数据集、数据管道和多线程、异步数据加载器</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal "><span class="pre">torch::serialize</span></code></p></td>
+<td><p>存储和加载模型检查点的序列化 API</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal "><span class="pre">torch::python</span></code></p></td>
+<td><p>将您的 C++模型绑定到 Python 的粘合剂</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal "><span class="pre">torch::jit</span></code></p></td>
+<td><p>对 TorchScript JIT 编译器的纯 C++访问</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="end-to-end-example">
+<h2>端到端示例 ¶</h2>
+<p>这是一个定义和训练简单神经网络在 MNIST 数据集上的简单、端到端示例：</p>
+<div class="highlight-cpp "><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;torch/torch.h&gt;</span>
+
+<span class="c1">// Define a new Module.</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">Net</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">torch</span><span class="o">::</span><span class="n">nn</span><span class="o">::</span><span class="n">Module</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">Net</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Construct and register two Linear submodules.</span>
+<span class="w">    </span><span class="n">fc1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">register_module</span><span class="p">(</span><span class="s">"fc1"</span><span class="p">,</span><span class="w"> </span><span class="n">torch</span><span class="o">::</span><span class="n">nn</span><span class="o">::</span><span class="n">Linear</span><span class="p">(</span><span class="mi">784</span><span class="p">,</span><span class="w"> </span><span class="mi">64</span><span class="p">));</span>
+<span class="w">    </span><span class="n">fc2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">register_module</span><span class="p">(</span><span class="s">"fc2"</span><span class="p">,</span><span class="w"> </span><span class="n">torch</span><span class="o">::</span><span class="n">nn</span><span class="o">::</span><span class="n">Linear</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span><span class="w"> </span><span class="mi">32</span><span class="p">));</span>
+<span class="w">    </span><span class="n">fc3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">register_module</span><span class="p">(</span><span class="s">"fc3"</span><span class="p">,</span><span class="w"> </span><span class="n">torch</span><span class="o">::</span><span class="n">nn</span><span class="o">::</span><span class="n">Linear</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">));</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// Implement the Net's algorithm.</span>
+<span class="w">  </span><span class="n">torch</span><span class="o">::</span><span class="n">Tensor</span><span class="w"> </span><span class="n">forward</span><span class="p">(</span><span class="n">torch</span><span class="o">::</span><span class="n">Tensor</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Use one of many tensor manipulation functions.</span>
+<span class="w">    </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">torch</span><span class="o">::</span><span class="n">relu</span><span class="p">(</span><span class="n">fc1</span><span class="o">-&gt;</span><span class="n">forward</span><span class="p">(</span><span class="n">x</span><span class="p">.</span><span class="n">reshape</span><span class="p">({</span><span class="n">x</span><span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"> </span><span class="mi">784</span><span class="p">})));</span>
+<span class="w">    </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">torch</span><span class="o">::</span><span class="n">dropout</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="cm">/*p=*/</span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="cm">/*train=*/</span><span class="n">is_training</span><span class="p">());</span>
+<span class="w">    </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">torch</span><span class="o">::</span><span class="n">relu</span><span class="p">(</span><span class="n">fc2</span><span class="o">-&gt;</span><span class="n">forward</span><span class="p">(</span><span class="n">x</span><span class="p">));</span>
+<span class="w">    </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">torch</span><span class="o">::</span><span class="n">log_softmax</span><span class="p">(</span><span class="n">fc3</span><span class="o">-&gt;</span><span class="n">forward</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="w"> </span><span class="cm">/*dim=*/</span><span class="mi">1</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// Use one of many "standard library" modules.</span>
+<span class="w">  </span><span class="n">torch</span><span class="o">::</span><span class="n">nn</span><span class="o">::</span><span class="n">Linear</span><span class="w"> </span><span class="n">fc1</span><span class="p">{</span><span class="k">nullptr</span><span class="p">},</span><span class="w"> </span><span class="n">fc2</span><span class="p">{</span><span class="k">nullptr</span><span class="p">},</span><span class="w"> </span><span class="n">fc3</span><span class="p">{</span><span class="k">nullptr</span><span class="p">};</span>
+<span class="p">};</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// Create a new Net.</span>
+<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">net</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">Net</span><span class="o">&gt;</span><span class="p">();</span>
+
+<span class="w">  </span><span class="c1">// Create a multi-threaded data loader for the MNIST dataset.</span>
+<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">data_loader</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">torch</span><span class="o">::</span><span class="n">data</span><span class="o">::</span><span class="n">make_data_loader</span><span class="p">(</span>
+<span class="w">      </span><span class="n">torch</span><span class="o">::</span><span class="n">data</span><span class="o">::</span><span class="n">datasets</span><span class="o">::</span><span class="n">MNIST</span><span class="p">(</span><span class="s">"./data"</span><span class="p">).</span><span class="n">map</span><span class="p">(</span>
+<span class="w">          </span><span class="n">torch</span><span class="o">::</span><span class="n">data</span><span class="o">::</span><span class="n">transforms</span><span class="o">::</span><span class="n">Stack</span><span class="o">&lt;&gt;</span><span class="p">()),</span>
+<span class="w">      </span><span class="cm">/*batch_size=*/</span><span class="mi">64</span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// Instantiate an SGD optimization algorithm to update our Net's parameters.</span>
+<span class="w">  </span><span class="n">torch</span><span class="o">::</span><span class="n">optim</span><span class="o">::</span><span class="n">SGD</span><span class="w"> </span><span class="n">optimizer</span><span class="p">(</span><span class="n">net</span><span class="o">-&gt;</span><span class="n">parameters</span><span class="p">(),</span><span class="w"> </span><span class="cm">/*lr=*/</span><span class="mf">0.01</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">epoch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="n">epoch</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">epoch</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">batch_index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">// Iterate the data loader to yield batches from the dataset.</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">batch</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="o">*</span><span class="n">data_loader</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="c1">// Reset gradients.</span>
+<span class="w">      </span><span class="n">optimizer</span><span class="p">.</span><span class="n">zero_grad</span><span class="p">();</span>
+<span class="w">      </span><span class="c1">// Execute the model on the input data.</span>
+<span class="w">      </span><span class="n">torch</span><span class="o">::</span><span class="n">Tensor</span><span class="w"> </span><span class="n">prediction</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">net</span><span class="o">-&gt;</span><span class="n">forward</span><span class="p">(</span><span class="n">batch</span><span class="p">.</span><span class="n">data</span><span class="p">);</span>
+<span class="w">      </span><span class="c1">// Compute a loss value to judge the prediction of our model.</span>
+<span class="w">      </span><span class="n">torch</span><span class="o">::</span><span class="n">Tensor</span><span class="w"> </span><span class="n">loss</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">torch</span><span class="o">::</span><span class="n">nll_loss</span><span class="p">(</span><span class="n">prediction</span><span class="p">,</span><span class="w"> </span><span class="n">batch</span><span class="p">.</span><span class="n">target</span><span class="p">);</span>
+<span class="w">      </span><span class="c1">// Compute gradients of the loss w.r.t. the parameters of our model.</span>
+<span class="w">      </span><span class="n">loss</span><span class="p">.</span><span class="n">backward</span><span class="p">();</span>
+<span class="w">      </span><span class="c1">// Update the parameters based on the calculated gradients.</span>
+<span class="w">      </span><span class="n">optimizer</span><span class="p">.</span><span class="n">step</span><span class="p">();</span>
+<span class="w">      </span><span class="c1">// Output the loss and checkpoint every 100 batches.</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">++</span><span class="n">batch_index</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="mi">100</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"Epoch: "</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">epoch</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">" | Batch: "</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">batch_index</span>
+<span class="w">                  </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">" | Loss: "</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">loss</span><span class="p">.</span><span class="n">item</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">        </span><span class="c1">// Serialize your model periodically as a checkpoint.</span>
+<span class="w">        </span><span class="n">torch</span><span class="o">::</span><span class="n">save</span><span class="p">(</span><span class="n">net</span><span class="p">,</span><span class="w"> </span><span class="s">"net.pt"</span><span class="p">);</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>要查看更多使用 PyTorch C++前端的高级示例，请参阅示例仓库。</p>
+</section>
+<section id="philosophy">
+<h2>哲学 ¶</h2>
+<p>PyTorch 的 C++前端设计理念是 Python 前端非常出色，应在可能的情况下使用；但在某些设置中，性能和可移植性要求使得使用 Python 解释器不可行。例如，Python 在低延迟、高性能或多线程环境中（如视频游戏或生产服务器）不是一个好的选择。C++前端的目标是解决这些用例，同时不牺牲 Python 前端的用户体验。</p>
+<p>因此，C++前端在设计、命名、约定和功能上紧密模仿 Python 前端：</p>
+<ul class="simple">
+<li><p>在设计、命名、约定和功能上与 Python 前端保持紧密一致。虽然两个前端之间可能存在一些差异（例如，我们在 Python 前端中删除了已弃用的功能或修复了“瑕疵”），但我们保证将 Python 模型移植到 C++的工作将仅限于翻译语言特性，而不是修改功能或行为。</p></li>
+<li><p>优先考虑灵活性和用户友好性，而不是微优化。在 C++中，你通常可以得到最优的代码，但代价是极端不友好的用户体验。灵活性和动态性是 PyTorch 的核心，C++前端旨在保持这种体验，在某些情况下，为了保持 API 简单易懂，甚至牺牲性能（或“隐藏”性能控制按钮）。我们希望那些不以编写 C++为生的研究人员能够使用我们的 API。</p></li>
+</ul>
+<p>警告：Python 并不一定比 C++ 慢！Python 前端几乎调用 C++ 来执行任何计算密集型操作（尤其是任何类型的数值运算），这些操作将占用程序中大部分时间。如果您更喜欢编写 Python，并且能够承担编写 Python 的成本，我们建议使用 PyTorch 的 Python 接口。然而，如果您更喜欢编写 C++，或者需要编写 C++（因为多线程、延迟或部署需求），PyTorch 的 C++ 前端提供了一个与 Python 对应物大致相同方便、灵活、友好和直观的 API。这两个前端服务于不同的用例，协同工作，并且没有一个旨在无条件地取代另一个。</p>
+</section>
+<section id="installation">
+<h2>安装¶</h2>
+<p>如何安装 C++ 前端库分发的说明，包括如何构建依赖于 LibTorch 的最小应用程序的示例，可以通过点击此链接找到。</p>
+</section>
+</section>
+
+
+             </article>
+             
+            </div>
+            <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        下一页 <img height="16" width="16" class="next-page" src="_static/images/chevron-right-orange.svg"> <img height="16" width="16" class="previous-page" src="_static/images/chevron-right-orange.svg"> 上一页
+      
+    </div>
+  
+
+  
+
+    <hr>
+
+  
+
+  <div role="contentinfo">
+    <p>© 版权所有 PyTorch 贡献者。</p>
+  </div>
+    
+      <div>使用 Sphinx 构建，主题由 Read the Docs 提供。</div>
+     
+
+</footer>
+
+          </div>
+        </div>
+
+        <div class="pytorch-content-right" id="pytorch-content-right">
+          <div class="pytorch-right-menu" id="pytorch-right-menu">
+            <div class="pytorch-side-scroll" id="pytorch-side-scroll-right">
+              <ul>
+<li><a class="reference internal" href="#">C++ 前端</a><ul>
+<li><a class="reference internal" href="#description">描述</a></li>
+<li><a class="reference internal" href="#end-to-end-example">端到端示例</a></li>
+<li><a class="reference internal" href="#philosophy">哲学</a></li>
+<li><a class="reference internal" href="#installation">安装</a></li>
+</ul>
+</li>
+</ul>
+
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+  
+
+
+  
+
+     
+       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+         <script src="_static/jquery.js"></script>
+         <script src="_static/underscore.js"></script>
+         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+         <script src="_static/doctools.js"></script>
+         <script src="_static/sphinx_highlight.js"></script>
+     
+
+  
+
+  <script type="text/javascript" src="_static/js/vendor/popper.min.js"></script>
+  <script type="text/javascript" src="_static/js/vendor/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+  <!-- Begin Footer -->
+
+  <div class="container-fluid docs-tutorials-resources" id="docs-tutorials-resources">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4 text-center">
+          <h2>文档</h2>
+          <p>访问 PyTorch 的全面开发者文档</p>
+          <a class="with-right-arrow" href="https://pytorch.org/docs/stable/index.html">查看文档</a>
+        </div>
+
+        <div class="col-md-4 text-center">
+          <h2>教程</h2>
+          <p>获取初学者和高级开发者的深入教程</p>
+          <a class="with-right-arrow" href="https://pytorch.org/tutorials">查看教程</a>
+        </div>
+
+        <div class="col-md-4 text-center">
+          <h2>资源</h2>
+          <p>查找开发资源并获得您的疑问解答</p>
+          <a class="with-right-arrow" href="https://pytorch.org/resources">查看资源</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container footer-container">
+      <div class="footer-logo-wrapper">
+        <a href="https://pytorch.org/" class="footer-logo"></a>
+      </div>
+
+      <div class="footer-links-wrapper">
+        <div class="footer-links-col">
+          <ul>
+            <li class="list-title"><a href="https://pytorch.org/">PyTorch</a></li>
+            <li><a href="https://pytorch.org/get-started">开始使用</a></li>
+            <li><a href="https://pytorch.org/features">功能</a></li>
+            <li><a href="https://pytorch.org/ecosystem">生态系统</a></li>
+            <li><a href="https://pytorch.org/blog/">博客</a></li>
+            <li><a href="https://github.com/pytorch/pytorch/blob/master/CONTRIBUTING.md">贡献</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links-col">
+          <ul>
+            <li class="list-title"><a href="https://pytorch.org/resources">资源</a></li>
+            <li><a href="https://pytorch.org/tutorials">教程</a></li>
+            <li><a href="https://pytorch.org/docs/stable/index.html">文档</a></li>
+            <li><a href="https://discuss.pytorch.org" target="_blank">讨论</a></li>
+            <li><a href="https://github.com/pytorch/pytorch/issues" target="_blank">GitHub 问题</a></li>
+            <li><a href="https://pytorch.org/assets/brand-guidelines/PyTorch-Brand-Guidelines.pdf" target="_blank">品牌指南</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links-col">
+          <ul>
+            <li class="list-title">保持更新</li>
+            <li><a href="https://www.facebook.com/pytorch" target="_blank">Facebook</a></li>
+            <li><a href="https://twitter.com/pytorch" target="_blank">Twitter</a></li>
+            <li><a href="https://www.youtube.com/pytorch" target="_blank">YouTube</a></li>
+            <li><a href="https://www.linkedin.com/company/pytorch" target="_blank">领英</a></li>
+          </ul>  
+          </div>
+
+        <div class="footer-links-col">
+          <ul>
+            <li class="list-title">PyTorch 播客</li>
+            <li><a href="https://open.spotify.com/show/6UzHKeiy368jKfQMKKvJY5" target="_blank">Spotify</a></li>
+            <li><a href="https://podcasts.apple.com/us/podcast/pytorch-developer-podcast/id1566080008" target="_blank">苹果</a></li>
+            <li><a href="https://www.google.com/podcasts?feed=aHR0cHM6Ly9mZWVkcy5zaW1wbGVjYXN0LmNvbS9PQjVGa0lsOA%3D%3D" target="_blank">谷歌</a></li>
+            <li><a href="https://music.amazon.com/podcasts/7a4e6f0e-26c2-49e9-a478-41bd244197d0/PyTorch-Developer-Podcast?" target="_blank">亚马逊</a></li>
+          </ul>
+         </div>
+        </div>
+        
+        <div class="privacy-policy">
+          <ul>
+            <li class="privacy-policy-links"><a href="https://www.linuxfoundation.org/terms/" target="_blank">条款</a></li>
+            <li class="privacy-policy-links">|</li>
+            <li class="privacy-policy-links"><a href="https://www.linuxfoundation.org/privacy-policy/" target="_blank">隐私</a></li>
+          </ul>
+        </div>
+        <div class="copyright">
+        <p>© 版权所有 Linux 基金会。PyTorch 基金会是 Linux 基金会的一个项目。有关 PyTorch 基金会的网站使用条款、商标政策以及其他适用政策，请参阅 www.linuxfoundation.org/policies/。PyTorch 基金会支持 PyTorch 开源项目，该项目已被确立为 LF Projects, LLC 的 PyTorch 项目系列。有关适用于 PyTorch 项目系列 LF Projects, LLC 的政策，请参阅 www.lfprojects.org/policies/。</p>
+      </div>
+     </div>
+
+  </footer>
+
+  <div class="cookie-banner-wrapper">
+  <div class="container">
+    <p class="gdpr-notice">为了分析流量并优化您的体验，我们在本网站上提供 cookies。通过点击或导航，您同意允许我们使用 cookies。作为本站点的当前维护者，Facebook 的 Cookies 政策适用。了解更多信息，包括可用的控制选项：Cookies 政策。</p>
+    <img class="close-button" src="_static/images/pytorch-x.svg" width="16" height="16">
+  </div>
+</div>
+
+  <!-- End Footer -->
+
+  <!-- Begin Mobile Menu -->
+
+  <div class="mobile-main-menu">
+    <div class="container-fluid">
+      <div class="container">
+        <div class="mobile-main-menu-header-container">
+          <a class="header-logo" href="https://pytorch.org/" aria-label="PyTorch"></a>
+          <a class="main-menu-close-button" href="#" data-behavior="close-mobile-menu"></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="mobile-main-menu-links-container">
+      <div class="main-menu">
+        <ul>
+           <li class="resources-mobile-menu-title">
+             <a>学习</a>
+           </li>
+           <ul class="resources-mobile-menu-items">
+             <li>
+               <a href="https://pytorch.org/get-started">开始使用</a>
+             </li>
+             <li>
+               <a href="https://pytorch.org/tutorials">指南</a>
+             </li>
+             <li>
+               <a href="https://pytorch.org/tutorials/beginner/basics/intro.html">学习基础知识</a>
+             </li>
+             <li>
+               <a href="https://pytorch.org/tutorials/recipes/recipes_index.html">PyTorch 烹饪法</a>
+             </li>
+             <li>
+               <a href="https://pytorch.org/tutorials/beginner/introyt.html">PyTorch 入门 - YouTube 系列</a>
+             </li>
+           </ul>
+           <li class="resources-mobile-menu-title">
+             <a>生态系统</a>
+           </li>
+           <ul class="resources-mobile-menu-items">
+             <li>
+               <a href="https://pytorch.org/ecosystem">工具</a>
+             </li>
+             <li>
+               <a href="https://pytorch.org/#community-module">社区</a>
+             </li>
+             <li>
+               <a href="https://discuss.pytorch.org/">论坛</a>
+             </li>
+             <li>
+               <a href="https://pytorch.org/resources">开发者资源</a>
+             </li>
+             <li>
+               <a href="https://pytorch.org/ecosystem/contributor-awards-2023">贡献者奖项 - 2024</a>
+             </li>
+           </ul>
+
+           <li class="resources-mobile-menu-title">
+             <a>Edge</a>
+           </li>
+
+           <ul class="resources-mobile-menu-items">
+             <li>
+               <a href="https://pytorch.org/edge">关于 PyTorch Edge</a>
+             </li>
+             
+             <li>
+               <a href="https://pytorch.org/executorch-overview">ExecuTorch</a>
+             </li>
+             <li>
+               <a href="https://pytorch.org/executorch/stable/index.html">ExecuTorch 文档</a>
+             </li>
+           </ul>
+
+           <li class="resources-mobile-menu-title">
+             <a>文档</a>
+           </li>
+
+           <ul class="resources-mobile-menu-items">
+            <li>
+              <a href="https://pytorch.org/docs/stable/index.html">PyTorch</a>
+            </li>
+
+            <li>
+              <a href="https://pytorch.org/pytorch-domains">PyTorch 领域</a>
+            </li>
+          </ul>
+
+          <li class="resources-mobile-menu-title">
+            <a>博客与新闻</a>
+          </li>
+            
+           <ul class="resources-mobile-menu-items">
+            <li>
+              <a href="https://pytorch.org/blog/">PyTorch 博客</a>
+            </li>
+            <li>
+              <a href="https://pytorch.org/community-blog">社区博客</a>
+            </li>
+
+            <li>
+              <a href="https://pytorch.org/videos">视频</a>
+            </li>
+
+            <li>
+              <a href="https://pytorch.org/community-stories">社区故事</a>
+            </li>
+            <li>
+              <a href="https://pytorch.org/events">活动</a>
+            </li>
+            <li>
+               <a href="https://pytorch.org/newsletter">通讯</a>
+             </li>
+          </ul>
+          
+          <li class="resources-mobile-menu-title">
+            <a>关于</a>
+          </li>
+
+          <ul class="resources-mobile-menu-items">
+            <li>
+              <a href="https://pytorch.org/foundation">PyTorch 基金会</a>
+            </li>
+            <li>
+              <a href="https://pytorch.org/governing-board">治理委员会</a>
+            </li>
+            <li>
+               <a href="https://pytorch.org/credits">云信用计划</a>
+            </li>
+            <li>
+               <a href="https://pytorch.org/tac">技术顾问委员会</a>
+            </li>
+            <li>
+               <a href="https://pytorch.org/staff">员工</a>
+            </li>
+            <li>
+               <a href="https://pytorch.org/contact-us">联系我们</a>
+            </li>
+          </ul>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- End Mobile Menu -->
+
+  <script type="text/javascript" src="_static/js/vendor/anchor.min.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+      mobileMenu.bind();
+      mobileTOC.bind();
+      pytorchAnchors.bind();
+      sideMenus.bind();
+      scrollToAnchor.bind();
+      highlightNavigation.bind();
+      mainMenuDropdown.bind();
+      filterTags.bind();
+
+      // Add class to links that have code blocks, since we cannot create links in code blocks
+      $("article.pytorch-article a span.pre").each(function(e) {
+        $(this).closest("a").addClass("has-code");
+      });
+    })
+  </script>
+
+</body></html>

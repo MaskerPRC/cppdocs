@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Tensor Creation API — PyTorch main documentation</title>
+  
+
+  
+  
+  
+  
+    <link rel="canonical" href="https://pytorch.org/docs/stable/notes/tensor_creation.html">
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css">
+  <!-- <link rel="stylesheet" href="../_static/pygments.css" type="text/css" /> -->
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css">
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css">
+  <link rel="stylesheet" href="../_static/cpp_theme.css" type="text/css">
+    <link rel="index" title="Index" href="../genindex.html">
+    <link rel="search" title="Search" href="../search.html">
+    <link rel="next" title="Tensor CUDA Stream API" href="tensor_cuda_stream.html">
+    <link rel="prev" title="Tensor Basics" href="tensor_basics.html">
+  <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','');</script>
+    <!-- End Google Tag Manager -->
+  
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+  <!-- Preload the theme fonts -->
+
+<link rel="preload" href="../_static/fonts/FreightSans/freight-sans-book.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../_static/fonts/FreightSans/freight-sans-medium.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../_static/fonts/IBMPlexMono/IBMPlexMono-Medium.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../_static/fonts/FreightSans/freight-sans-bold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../_static/fonts/FreightSans/freight-sans-medium-italic.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../_static/fonts/IBMPlexMono/IBMPlexMono-SemiBold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+
+<!-- Preload the katex fonts -->
+
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Math-Italic.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Main-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Main-Bold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Size1-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Size4-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Size2-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Size3-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Caligraphic-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css" integrity="sha384-vSIIfh2YWi9wW0r9iZe7RJPrKwp6bG+s9QZMoITbCckVJqGCCRhc+ccxNcdpHuYu" crossorigin="anonymous">
+</head><body class="pytorch-body"><div class="container-fluid header-holder tutorials-header" id="header-holder">
+  <div class="container">
+    <div class="header-container">
+      <a class="header-logo" href="https://pytorch.org/" aria-label="PyTorch"></a>
+
+      <div class="main-menu">
+        <ul>
+
+          <li class="main-menu-item">
+          <div id="resourcesDropdownButton" data-toggle="resources-dropdown" class="resources-dropdown">
+              <a class="with-down-arrow">学习</a>
+              <div class="resources-dropdown-menu">
+                <a class="nav-dropdown-item" href="https://pytorch.org/get-started">
+                  <span class="dropdown-title">开始使用</span>
+                  <p>在本地运行 PyTorch 或快速开始使用支持的云平台之一</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/tutorials">
+                  <span class="dropdown-title">教程</span><p></p>
+                  <p>PyTorch 教程中的新内容</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/tutorials/beginner/basics/intro.html">
+                  <span class="dropdown-title">学习基础知识</span><p></p>
+                  <p>熟悉 PyTorch 的概念和模块</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/tutorials/recipes/recipes_index.html">
+                  <span class="dropdown-title">PyTorch 食谱</span><p></p>
+                  <p>精简版、可直接部署的 PyTorch 代码示例</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/tutorials/beginner/introyt.html">
+                  <span class="dropdown-title">PyTorch 入门 - YouTube 系列</span><p></p>
+                  <p>通过我们引人入胜的 YouTube 教程系列掌握 PyTorch 基础知识</p>
+                </a>
+              </div>
+            </div>
+          </li>
+
+          <li>
+          <div id="resourcesDropdownButton" data-toggle="resources-dropdown" class="resources-dropdown">
+              <a class="with-down-arrow">生态系统</a>
+              <div class="resources-dropdown-menu">
+                <a class="nav-dropdown-item" href="https://pytorch.org/ecosystem">
+                  <span class="dropdown-title">工具</span><p></p>
+                  <p>了解 PyTorch 生态系统中的工具和框架</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/#community-module">
+                  <span class="dropdown-title">社区</span>
+                  <p>加入 PyTorch 开发者社区，贡献、学习并获得问题解答</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://discuss.pytorch.org/" target="_blank">
+                  <span class="dropdown-title">论坛</span>
+                  <p>讨论 PyTorch 代码、问题、安装、研究的地方</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/resources">
+                  <span class="dropdown-title">开发者资源</span>
+                  <p>查找资源并获得问题解答</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/ecosystem/contributor-awards-2024">
+                  <span class="dropdown-title">贡献者奖项 - 2024</span><p></p>
+                  <p>本届 PyTorch 会议揭晓获奖者</p>
+                </a>
+              </div>
+            </div>
+          </li>
+
+          <li>
+          <div id="resourcesDropdownButton" data-toggle="resources-dropdown" class="resources-dropdown">
+              <a class="with-down-arrow">
+                Edge
+              </a>
+              <div class="resources-dropdown-menu">
+                <a class="nav-dropdown-item" href="https://pytorch.org/edge">
+                  <span class="dropdown-title">关于 PyTorch Edge</span><p></p>
+                  <p>为边缘设备构建创新和隐私感知的 AI 体验</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/executorch-overview">
+                  <span class="dropdown-title">ExecuTorch</span><p></p>
+                  <p>基于移动和边缘设备的端到端推理能力解决方案</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/executorch/stable/index.html">
+                  <span class="dropdown-title">ExecuTorch 文档</span><p></p>
+                </a>
+              </div>
+            </div>  
+          </li>
+
+          <li class="main-menu-item">
+            <div id="resourcesDropdownButton" data-toggle="resources-dropdown" class="resources-dropdown">
+              <a class="with-down-arrow">文档</a>
+              <div class="resources-dropdown-menu">
+                <a class="nav-dropdown-item" href="https://pytorch.org/docs/stable/index.html">
+                  <span class="dropdown-title">PyTorch</span><p></p>
+                  <p>探索文档以获取全面指导，了解如何使用 PyTorch</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/pytorch-domains">
+                  <span class="dropdown-title">PyTorch 领域</span><p></p>
+                  <p>阅读 PyTorch 领域的文档，了解更多关于特定领域库的信息</p>
+                </a>
+              </div>
+            </div>
+          </li>
+
+          <li>
+            <div id="resourcesDropdownButton" data-toggle="resources-dropdown" class="resources-dropdown">
+              <a class="with-down-arrow">博客与新闻</a>
+              <div class="resources-dropdown-menu">
+                <a class="nav-dropdown-item" href="https://pytorch.org/blog/">
+                  <span class="dropdown-title">PyTorch 博客</span><p></p>
+                  <p>捕捉最新的技术新闻和事件</p>
+                </a>
+                 <a class="nav-dropdown-item" href="https://pytorch.org/community-blog">
+                  <span class="dropdown-title">社区博客</span><p></p>
+                  <p>PyTorch 生态系统故事</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/videos">
+                  <span class="dropdown-title">视频</span><p></p>
+                  <p>了解最新的 PyTorch 教程、新内容等</p>
+                </a><a class="nav-dropdown-item" href="https://pytorch.org/community-stories">
+                  <span class="dropdown-title">社区故事</span><p></p>
+                  <p>学习如何我们的社区使用 PyTorch 解决真实、日常的机器学习问题</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/events">
+                  <span class="dropdown-title">活动</span><p></p>
+                  <p>查找活动、网络研讨会和播客</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/newsletter">
+                  <span class="dropdown-title">通讯</span><p></p>
+                  <p>跟踪最新更新</p>
+                </a>
+            </div>
+          </div></li>
+
+          <li>
+            <div id="resourcesDropdownButton" data-toggle="resources-dropdown" class="resources-dropdown">
+              <a class="with-down-arrow">关于</a>
+              <div class="resources-dropdown-menu">
+                <a class="nav-dropdown-item" href="https://pytorch.org/foundation">
+                  <span class="dropdown-title">PyTorch 基金会</span><p></p>
+                  <p>了解更多关于 PyTorch 基金会的信息</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/governing-board">
+                  <span class="dropdown-title">管理委员会</span><p></p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/credits">
+                  <span class="dropdown-title">云信用计划</span><p></p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/tac">
+                  <span class="dropdown-title">技术顾问委员会</span><p></p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/staff">
+                  <span class="dropdown-title">员工</span><p></p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/contact-us">
+                  <span class="dropdown-title">联系我们</span><p></p>
+                </a>
+              </div>
+            </div>
+          </li>
+
+          <li class="main-menu-item">
+            <div class="no-dropdown">
+              <a href="https://pytorch.org/join" data-cta="join">成为会员</a>
+            </div>
+          </li>
+          <li>
+           <div class="main-menu-item">
+             <a href="https://github.com/pytorch/pytorch" class="github-icon">
+             </a>
+           </div>
+          </li>
+          <!--- TODO: This block adds the search icon to the nav bar. We will enable it later. 
+          <li>
+            <div class="main-menu-item">
+             <a href="https://github.com/pytorch/pytorch" class="search-icon">
+             </a>
+            </div>
+          </li>
+          --->
+        </ul>
+      </div>
+
+      <a class="main-menu-open-button" href="#" data-behavior="open-mobile-menu"></a>
+    </div>
+  </div>
+</div>
+
+
+
+   
+
+    
+
+    <div class="table-of-contents-link-wrapper">
+      <span>目录</span>
+      <a href="#" class="toggle-table-of-contents" data-behavior="toggle-table-of-contents"></a>
+    </div>
+
+    <nav data-toggle="wy-nav-shift" class="pytorch-left-menu" id="pytorch-left-menu">
+      <div class="pytorch-side-scroll">
+        <div class="pytorch-menu pytorch-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          <div class="pytorch-left-menu-search">
+            
+
+            
+              
+              
+                <div class="version">主页</div>
+              
+            
+
+            
+
+
+  
+
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search Docs">
+    <input type="hidden" name="check_keywords" value="yes">
+    <input type="hidden" name="area" value="default">
+  </form>
+</div>
+
+            
+          </div>
+
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../installing.html">安装 PyTorch 的 C++ 发行版</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../frontend.html">C++ 前端</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">笔记</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="faq.html">常见问题解答</a></li>
+<li class="toctree-l1"><a class="reference internal" href="inference_mode.html">推理模式</a></li>
+<li class="toctree-l1"><a class="reference internal" href="maybe_owned.html">MaybeOwned&lt;Tensor&gt;</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tensor_basics.html">张量基础</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">张量创建 API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tensor_cuda_stream.html">张量 CUDA 流 API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tensor_indexing.html">张量索引 API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="versioning.html">图书馆版本控制</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <div class="pytorch-container">
+      <div class="pytorch-page-level-bar" id="pytorch-page-level-bar">
+        <div class="pytorch-breadcrumbs-wrapper">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="pytorch-breadcrumbs">
+    
+      <li>
+        文档 &gt;</li>
+
+        
+      <li>张量创建 API</li>
+    
+    
+      <li class="pytorch-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/notes/tensor_creation.rst.txt" rel="nofollow"><img src="../_static/images/view-page-source-icon.svg" width="16" height="16"></a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+</div>
+        </div>
+
+        <div class="pytorch-shortcuts-wrapper" id="pytorch-shortcuts-wrapper">快捷键</div>
+      </div>
+
+      <section data-toggle="wy-nav-shift" id="pytorch-content-wrap" class="pytorch-content-wrap">
+        <div class="pytorch-content-left">
+
+        
+          <!-- Google Tag Manager (noscript) -->
+          <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+          <!-- End Google Tag Manager (noscript) -->
+          
+          <div class="rst-content">
+          
+            <div role="main" class="main-content" itemscope="itemscope" itemtype="http://schema.org/Article">
+             <article itemprop="articleBody" id="pytorch-article" class="pytorch-article">
+              
+  <section id="tensor-creation-api">
+<h1>张量创建 API ¶</h1>
+<p>本笔记描述了如何在 PyTorch C++ API 中创建张量。它强调了可用的工厂函数，这些函数根据某些算法填充新的张量，并列出了可用于配置新张量形状、数据类型、设备和其他属性的选项。</p>
+<section id="factory-functions">
+<h2>工厂函数 ¶</h2>
+<p>工厂函数是一种生成新张量的函数。PyTorch（包括 Python 和 C++）中提供了许多工厂函数，它们在初始化新张量并返回之前的方式上有所不同。所有工厂函数都遵循以下一般的“模式”：</p>
+<div class="highlight-cpp "><div class="highlight"><pre><span></span><span class="n">torch</span><span class="o">::&lt;</span><span class="n">function</span><span class="o">-</span><span class="n">name</span><span class="o">&gt;</span><span class="p">(</span><span class="o">&lt;</span><span class="n">function</span><span class="o">-</span><span class="n">specific</span><span class="o">-</span><span class="n">options</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="o">&lt;</span><span class="n">sizes</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="o">&lt;</span><span class="n">tensor</span><span class="o">-</span><span class="n">options</span><span class="o">&gt;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>让我们分解这个“模式”的各个部分：</p>
+<ol class="arabic simple">
+<li><p> <code class="docutils literal "><span class="pre">&lt;function-name&gt;</span></code> 是您想要调用的函数名称，</p></li>
+<li><p> <code class="docutils literal "><span class="pre">&lt;functions-specific-options&gt;</span></code> 是特定工厂函数接受的任何必需或可选参数，</p></li>
+<li><p> <code class="docutils literal "><span class="pre">&lt;sizes&gt;</span></code> 是一个类型为 <code class="docutils literal "><span class="pre">IntArrayRef</span></code> 的对象，并指定了结果张量的形状，</p></li>
+<li><p> <code class="docutils literal "><span class="pre">&lt;tensor-options&gt;</span></code> 是 <code class="docutils literal "><span class="pre">TensorOptions</span></code> 的一个实例，并配置了结果张量的数据类型、设备、布局和其他属性。</p></li>
+</ol>
+<section id="picking-a-factory-function">
+<h3>选择工厂函数</h3>
+<p>以下是在撰写本文时（超链接指向相应的 Python 函数，因为它们通常有更详细的文档——选项相同）可用的工厂函数：</p>
+<ul class="simple">
+<li><p>arange: 返回一个包含整数序列的张量，</p></li>
+<li><p>empty: 返回一个未初始化值的张量，</p></li>
+<li><p>eye: 返回一个单位矩阵，</p></li>
+<li><p>full: 返回一个填充单一值的张量，</p></li>
+<li><p>linspace：返回一个在某个区间内线性间隔的张量，</p></li>
+<li><p>logspace：返回一个在某个区间内对数间隔的张量，</p></li>
+<li><p>ones：返回一个填充所有 1 的张量，</p></li>
+<li><p>rand：返回一个从均匀分布中抽取值的张量，</p></li>
+<li><p>randint：返回一个从区间中随机抽取整数的张量，</p></li>
+<li><p>randn：返回一个填充有从单位正态分布中抽取的值的张量，</p></li>
+<li><p>randperm：返回一个填充有某些区间内随机排列的整数的张量，</p></li>
+<li><p>zeros：返回一个填充全零的张量。</p></li>
+</ul>
+</section>
+<section id="specifying-a-size">
+<h3>指定大小</h3>
+<p>一些函数由于其填充张量的方式，本质上不需要特定的参数，可以使用大小来调用。例如，以下行创建了一个包含 5 个元素的向量，初始值都设置为 1：</p>
+<div class="highlight-cpp "><div class="highlight"><pre><span></span><span class="n">torch</span><span class="o">::</span><span class="n">Tensor</span><span class="w"> </span><span class="n">tensor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">torch</span><span class="o">::</span><span class="n">ones</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>如果我们想创建一个 <code class="docutils literal "><span class="pre">3</span> <span class="pre">x</span> <span class="pre">5</span></code> 矩阵，或者一个 <code class="docutils literal "><span class="pre">2</span> <span class="pre">x</span> <span class="pre">3</span> <span class="pre">x</span> <span class="pre">4</span></code> 张量呢？一般来说， <code class="docutils literal "><span class="pre">IntArrayRef</span></code> （工厂函数的大小参数类型）是通过指定每个维度的尺寸来构造的。例如， <code class="docutils literal "><span class="pre">{2,</span> <span class="pre">3}</span></code> 表示一个具有两行三列的张量（在这种情况下是矩阵）， <code class="docutils literal "><span class="pre">{3,</span> <span class="pre">4,</span> <span class="pre">5}</span></code> 表示一个三维张量， <code class="docutils literal "><span class="pre">{2}</span></code> 表示一个包含两个组件的一维张量。在一维情况下，您可以省略花括号，只需传递单个整数即可，就像我们上面做的那样。请注意，波浪形花括号只是构造 <code class="docutils literal "><span class="pre">IntArrayRef</span></code> 的一种方式。您还可以传递 <code class="docutils literal "><span class="pre">std::vector&lt;int64_t&gt;</span></code> 和其他几种类型。无论如何，这意味着我们可以通过以下方式构造一个填充有单位正态分布值的三个维度的张量：</p>
+<div class="highlight-cpp "><div class="highlight"><pre><span></span><span class="n">torch</span><span class="o">::</span><span class="n">Tensor</span><span class="w"> </span><span class="n">tensor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">torch</span><span class="o">::</span><span class="n">randn</span><span class="p">({</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">});</span>
+<span class="n">assert</span><span class="p">(</span><span class="n">tensor</span><span class="p">.</span><span class="n">sizes</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int64_t</span><span class="o">&gt;</span><span class="p">{</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">});</span>
+</pre></div>
+</div>
+<p> <code class="docutils literal "><span class="pre">tensor.sizes()</span></code> 返回一个 <code class="docutils literal "><span class="pre">IntArrayRef</span></code> ，可以与一个 <code class="docutils literal "><span class="pre">std::vector&lt;int64_t&gt;</span></code> 进行比较，我们可以看到它包含了我们传递给张量的尺寸。您还可以写入 <code class="docutils literal "><span class="pre">tensor.size(i)</span></code> 来访问单个维度，这相当于但优于 <code class="docutils literal "><span class="pre">tensor.sizes()[i]</span></code> 。</p>
+</section>
+<section id="passing-function-specific-parameters">
+<h3>传递函数特定参数</h3>
+<p> <code class="docutils literal "><span class="pre">ones</span></code> 和 <code class="docutils literal "><span class="pre">randn</span></code> 都不接受任何额外的参数来改变它们的行为。一个需要进一步配置的函数是 <code class="docutils literal "><span class="pre">randint</span></code> ，它接受生成整数的上界，以及一个可选的下界，默认为 0。这里我们创建一个 <code class="docutils literal "><span class="pre">5</span> <span class="pre">x</span> <span class="pre">5</span></code> 的平方矩阵，矩阵中的整数介于 0 到 10 之间：</p>
+<div class="highlight-cpp "><div class="highlight"><pre><span></span><span class="n">torch</span><span class="o">::</span><span class="n">Tensor</span><span class="w"> </span><span class="n">tensor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">torch</span><span class="o">::</span><span class="n">randint</span><span class="p">(</span><span class="cm">/*high=*/</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">});</span>
+</pre></div>
+</div>
+<p>然后，我们将下界提高到 3：</p>
+<div class="highlight-cpp "><div class="highlight"><pre><span></span><span class="n">torch</span><span class="o">::</span><span class="n">Tensor</span><span class="w"> </span><span class="n">tensor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">torch</span><span class="o">::</span><span class="n">randint</span><span class="p">(</span><span class="cm">/*low=*/</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="cm">/*high=*/</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">});</span>
+</pre></div>
+</div>
+<p>内联注释 <code class="docutils literal "><span class="pre">/*low=*/</span></code> 和 <code class="docutils literal "><span class="pre">/*high=*/</span></code> 当然不是必需的，但就像 Python 中的关键字参数一样，有助于提高可读性。</p>
+<div class="admonition tip">
+<p class="admonition-title">提示</p>
+<p>主要的收获是大小总是跟随特定函数的参数。</p>
+</div>
+<div class="admonition attention">
+<p class="admonition-title">注意</p>
+<p>有时候一个函数根本不需要大小参数。例如， <code class="docutils literal "><span class="pre">arange</span></code> 返回的张量的大小完全由其特定函数的参数指定——整数范围的上下限。在这种情况下，函数不需要 <code class="docutils literal "><span class="pre">size</span></code> 参数。</p>
+</div>
+</section>
+<section id="configuring-properties-of-the-tensor">
+<h3>配置张量的属性</h3>
+<p>前一节讨论了特定函数的参数。特定函数的参数只能改变填充张量的值，有时还可以改变张量的大小。它们永远不会改变创建的张量的数据类型（例如 <code class="docutils literal "><span class="pre">float32</span></code> 或 <code class="docutils literal "><span class="pre">int64</span></code> ）或它是否位于 CPU 或 GPU 内存中。这些属性的指定留给每个工厂函数的最后一个参数：一个下面将要讨论的 <code class="docutils literal "><span class="pre">TensorOptions</span></code> 对象。</p>
+<p> <code class="docutils literal "><span class="pre">TensorOptions</span></code> 是一个封装 Tensor 构建轴的类。构建轴是指 Tensor 在构建之前可以配置（有时也可以在之后更改）的特定属性。这些构建轴包括：</p>
+<ul class="simple">
+<li><p> <code class="docutils literal "><span class="pre">dtype</span></code> （以前称为“标量类型”），它控制存储在张量中的元素的数据类型，</p></li>
+<li><p> <code class="docutils literal "><span class="pre">layout</span></code> ，它可以是带状（密集）或稀疏的，</p></li>
+<li><p> <code class="docutils literal "><span class="pre">device</span></code> 代表存储张量的计算设备（如 CPU 或 CUDA GPU），</p></li>
+<li><p> <code class="docutils literal "><span class="pre">requires_grad</span></code> 布尔值，用于启用或禁用张量的梯度记录，</p></li>
+</ul>
+<p>如果你熟悉 Python 中的 PyTorch，这些轴将非常熟悉。目前这些轴的允许值有：</p>
+<ul class="simple">
+<li><p>对于 <code class="docutils literal "><span class="pre">dtype</span></code> : <code class="docutils literal "><span class="pre">kUInt8</span></code> ， <code class="docutils literal "><span class="pre">kInt8</span></code> ， <code class="docutils literal "><span class="pre">kInt16</span></code> ， <code class="docutils literal "><span class="pre">kInt32</span></code> ， <code class="docutils literal "><span class="pre">kInt64</span></code> ， <code class="docutils literal "><span class="pre">kFloat32</span></code> 和 <code class="docutils literal "><span class="pre">kFloat64</span></code> ，</p></li>
+<li><p>对于 <code class="docutils literal "><span class="pre">layout</span></code> : <code class="docutils literal "><span class="pre">kStrided</span></code> 和 <code class="docutils literal "><span class="pre">kSparse</span></code> ，</p></li>
+<li><p>对于 <code class="docutils literal "><span class="pre">device</span></code> : 要么 <code class="docutils literal "><span class="pre">kCPU</span></code> ，要么 <code class="docutils literal "><span class="pre">kCUDA</span></code> （可接受可选的设备索引），</p></li>
+<li><p>对于 <code class="docutils literal "><span class="pre">requires_grad</span></code> : 要么 <code class="docutils literal "><span class="pre">true</span></code> 要么 <code class="docutils literal "><span class="pre">false</span></code> 。</p></li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">提示</p>
+<p>存在类似于 Rust 风格的简写形式用于 dtypes，如 <code class="docutils literal "><span class="pre">kF32</span></code> 替代 <code class="docutils literal "><span class="pre">kFloat32</span></code> 。完整列表请见此处。</p>
+</div>
+<p> <code class="docutils literal "><span class="pre">TensorOptions</span></code> 的一个实例为每个这些轴存储一个具体的值。以下是一个创建表示 64 位浮点、需要梯度且位于 CUDA 设备 1 上的 <code class="docutils literal "><span class="pre">TensorOptions</span></code> 对象的示例：</p>
+<div class="highlight-cpp "><div class="highlight"><pre><span></span><span class="k">auto</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=</span>
+<span class="w">  </span><span class="n">torch</span><span class="o">::</span><span class="n">TensorOptions</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">torch</span><span class="o">::</span><span class="n">kFloat32</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">layout</span><span class="p">(</span><span class="n">torch</span><span class="o">::</span><span class="n">kStrided</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">device</span><span class="p">(</span><span class="n">torch</span><span class="o">::</span><span class="n">kCUDA</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">requires_grad</span><span class="p">(</span><span class="nb">true</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>注意我们如何使用 <code class="docutils literal "><span class="pre">TensorOptions</span></code> 的“builder”风格方法逐步构建对象。如果我们把这个对象作为工厂函数的最后一个参数传递，新创建的张量将具有以下属性：</p>
+<div class="highlight-cpp "><div class="highlight"><pre><span></span><span class="n">torch</span><span class="o">::</span><span class="n">Tensor</span><span class="w"> </span><span class="n">tensor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">torch</span><span class="o">::</span><span class="n">full</span><span class="p">({</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">},</span><span class="w"> </span><span class="cm">/*value=*/</span><span class="mi">123</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="p">);</span>
+
+<span class="n">assert</span><span class="p">(</span><span class="n">tensor</span><span class="p">.</span><span class="n">dtype</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">torch</span><span class="o">::</span><span class="n">kFloat32</span><span class="p">);</span>
+<span class="n">assert</span><span class="p">(</span><span class="n">tensor</span><span class="p">.</span><span class="n">layout</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">torch</span><span class="o">::</span><span class="n">kStrided</span><span class="p">);</span>
+<span class="n">assert</span><span class="p">(</span><span class="n">tensor</span><span class="p">.</span><span class="n">device</span><span class="p">().</span><span class="n">type</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">torch</span><span class="o">::</span><span class="n">kCUDA</span><span class="p">);</span><span class="w"> </span><span class="c1">// or device().is_cuda()</span>
+<span class="n">assert</span><span class="p">(</span><span class="n">tensor</span><span class="p">.</span><span class="n">device</span><span class="p">().</span><span class="n">index</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<span class="n">assert</span><span class="p">(</span><span class="n">tensor</span><span class="p">.</span><span class="n">requires_grad</span><span class="p">());</span>
+</pre></div>
+</div>
+<p>现在，你可能想知道：我是否真的需要为每个新创建的张量指定每个轴？幸运的是，答案是否定的，因为每个轴都有一个默认值。这些默认值是：</p>
+<ul class="simple">
+<li><p> <code class="docutils literal "><span class="pre">kFloat32</span></code> 用于数据类型，</p></li>
+<li><p>用于布局的</p></li>
+<li><p>用于设备的</p></li>
+<li><p>用于 <code class="docutils literal "><span class="pre">requires_grad</span></code> 的</p></li>
+</ul>
+<p>这意味着在构建一个 <code class="docutils literal "><span class="pre">TensorOptions</span></code> 对象时省略的任何轴都将采用其默认值。例如，这是我们之前的 <code class="docutils literal "><span class="pre">TensorOptions</span></code> 对象，但 <code class="docutils literal "><span class="pre">dtype</span></code> 和 <code class="docutils literal "><span class="pre">layout</span></code> 已默认：</p>
+<div class="highlight-cpp "><div class="highlight"><pre><span></span><span class="k">auto</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">torch</span><span class="o">::</span><span class="n">TensorOptions</span><span class="p">().</span><span class="n">device</span><span class="p">(</span><span class="n">torch</span><span class="o">::</span><span class="n">kCUDA</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">).</span><span class="n">requires_grad</span><span class="p">(</span><span class="nb">true</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>事实上，我们甚至可以省略所有轴，得到一个完全默认的 <code class="docutils literal "><span class="pre">TensorOptions</span></code> 对象：</p>
+<div class="highlight-cpp "><div class="highlight"><pre><span></span><span class="k">auto</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">torch</span><span class="o">::</span><span class="n">TensorOptions</span><span class="p">();</span><span class="w"> </span><span class="c1">// or `torch::TensorOptions options;`</span>
+</pre></div>
+</div>
+<p>这个结果的美好之处在于，我们刚才谈了这么多的 <code class="docutils literal "><span class="pre">TensorOptions</span></code> 对象可以完全从任何张量工厂调用中省略：</p>
+<div class="highlight-cpp "><div class="highlight"><pre><span></span><span class="c1">// A 32-bit float, strided, CPU tensor that does not require a gradient.</span>
+<span class="n">torch</span><span class="o">::</span><span class="n">Tensor</span><span class="w"> </span><span class="n">tensor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">torch</span><span class="o">::</span><span class="n">randn</span><span class="p">({</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">});</span>
+<span class="n">torch</span><span class="o">::</span><span class="n">Tensor</span><span class="w"> </span><span class="n">range</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">torch</span><span class="o">::</span><span class="n">arange</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>但甜头更大：到目前为止，在所提供的 API 中，你可能已经注意到初始的 <code class="docutils literal "><span class="pre">torch::TensorOptions()</span></code> 相当长。好消息是，对于每个构造轴（数据类型、布局、设备以及 <code class="docutils literal "><span class="pre">requires_grad</span></code> ），在 <code class="docutils literal "><span class="pre">torch::</span></code> 命名空间中都有一个免费函数，你可以为该轴传递一个值。每个函数然后返回一个预配置了该轴的 <code class="docutils literal "><span class="pre">TensorOptions</span></code> 对象，但允许通过上述构建器样式方法进行进一步修改。例如，</p>
+<div class="highlight-cpp "><div class="highlight"><pre><span></span><span class="n">torch</span><span class="o">::</span><span class="n">ones</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="n">torch</span><span class="o">::</span><span class="n">TensorOptions</span><span class="p">().</span><span class="n">dtype</span><span class="p">(</span><span class="n">torch</span><span class="o">::</span><span class="n">kFloat32</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>等价于</p>
+<div class="highlight-cpp "><div class="highlight"><pre><span></span><span class="n">torch</span><span class="o">::</span><span class="n">ones</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="n">torch</span><span class="o">::</span><span class="n">dtype</span><span class="p">(</span><span class="n">torch</span><span class="o">::</span><span class="n">kFloat32</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>并且进一步地，我们可以直接写</p>
+<div class="highlight-cpp "><div class="highlight"><pre><span></span><span class="n">torch</span><span class="o">::</span><span class="n">ones</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="n">torch</span><span class="o">::</span><span class="n">TensorOptions</span><span class="p">().</span><span class="n">dtype</span><span class="p">(</span><span class="n">torch</span><span class="o">::</span><span class="n">kFloat32</span><span class="p">).</span><span class="n">layout</span><span class="p">(</span><span class="n">torch</span><span class="o">::</span><span class="n">kStrided</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>我们可以简单地写</p>
+<div class="highlight-cpp "><div class="highlight"><pre><span></span><span class="n">torch</span><span class="o">::</span><span class="n">ones</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="n">torch</span><span class="o">::</span><span class="n">dtype</span><span class="p">(</span><span class="n">torch</span><span class="o">::</span><span class="n">kFloat32</span><span class="p">).</span><span class="n">layout</span><span class="p">(</span><span class="n">torch</span><span class="o">::</span><span class="n">kStrided</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>这样可以节省我们很多打字。这意味着在实践中，你几乎永远不需要写出 <code class="docutils literal "><span class="pre">torch::TensorOptions</span></code> 。相反，使用 <code class="docutils literal "><span class="pre">torch::dtype()</span></code> 、 <code class="docutils literal "><span class="pre">torch::device()</span></code> 、 <code class="docutils literal "><span class="pre">torch::layout()</span></code> 和 <code class="docutils literal "><span class="pre">torch::requires_grad()</span></code> 函数。</p>
+<p>最后，一个便利之处在于 <code class="docutils literal "><span class="pre">TensorOptions</span></code> 可以隐式地从单个值构建。这意味着每当一个函数有一个 <code class="docutils literal "><span class="pre">TensorOptions</span></code> 类型的参数，就像所有工厂函数一样，我们可以直接传递一个值，如 <code class="docutils literal "><span class="pre">torch::kFloat32</span></code> 或 <code class="docutils literal "><span class="pre">torch::kStrided</span></code> ，来代替整个对象。因此，当我们只想更改与默认值相比的单个轴时，我们只需传递那个值。因此，原本</p>
+<div class="highlight-cpp "><div class="highlight"><pre><span></span><span class="n">torch</span><span class="o">::</span><span class="n">ones</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="n">torch</span><span class="o">::</span><span class="n">TensorOptions</span><span class="p">().</span><span class="n">dtype</span><span class="p">(</span><span class="n">torch</span><span class="o">::</span><span class="n">kFloat32</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>变成了</p>
+<div class="highlight-cpp "><div class="highlight"><pre><span></span><span class="n">torch</span><span class="o">::</span><span class="n">ones</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="n">torch</span><span class="o">::</span><span class="n">dtype</span><span class="p">(</span><span class="n">torch</span><span class="o">::</span><span class="n">kFloat32</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>并且可以最终缩短为</p>
+<div class="highlight-cpp "><div class="highlight"><pre><span></span><span class="n">torch</span><span class="o">::</span><span class="n">ones</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="n">torch</span><span class="o">::</span><span class="n">kFloat32</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>当然，使用这种简短语法无法进一步修改 <code class="docutils literal "><span class="pre">TensorOptions</span></code> 实例的更多属性，但如果我们只需要更改一个属性，这相当实用。</p>
+<p>总结来说，我们现在可以比较如何使用 <code class="docutils literal "><span class="pre">TensorOptions</span></code> 默认值以及使用自由函数创建 <code class="docutils literal "><span class="pre">TensorOptions</span></code> 的简写 API，在 C++中创建张量与在 Python 中具有相同的便利性。比较以下 Python 中的调用：</p>
+<div class="highlight-python "><div class="highlight"><pre><span></span><span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s1">'cuda'</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>C++中的等效调用为：</p>
+<div class="highlight-cpp "><div class="highlight"><pre><span></span><span class="n">torch</span><span class="o">::</span><span class="n">randn</span><span class="p">({</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">},</span><span class="w"> </span><span class="n">torch</span><span class="o">::</span><span class="n">dtype</span><span class="p">(</span><span class="n">torch</span><span class="o">::</span><span class="n">kFloat32</span><span class="p">).</span><span class="n">device</span><span class="p">(</span><span class="n">torch</span><span class="o">::</span><span class="n">kCUDA</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">).</span><span class="n">requires_grad</span><span class="p">(</span><span class="nb">true</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>非常接近！</p>
+</section>
+</section>
+<section id="conversion">
+<h2>转换 §</h2>
+<p>就像我们可以使用 <code class="docutils literal "><span class="pre">TensorOptions</span></code> 来配置如何创建新的张量一样，我们也可以使用 <code class="docutils literal "><span class="pre">TensorOptions</span></code> 将张量从一组属性转换为另一组属性。这种转换通常创建一个新的张量，并且不会原地发生。例如，如果我们有一个使用 <code class="docutils literal "><span class="pre">source_tensor</span></code> 创建的张量</p>
+<div class="highlight-cpp "><div class="highlight"><pre><span></span><span class="n">torch</span><span class="o">::</span><span class="n">Tensor</span><span class="w"> </span><span class="n">source_tensor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">torch</span><span class="o">::</span><span class="n">randn</span><span class="p">({</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">},</span><span class="w"> </span><span class="n">torch</span><span class="o">::</span><span class="n">kInt64</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>我们可以将它从 <code class="docutils literal "><span class="pre">int64</span></code> 转换为 <code class="docutils literal "><span class="pre">float32</span></code> :</p>
+<div class="highlight-cpp "><div class="highlight"><pre><span></span><span class="n">torch</span><span class="o">::</span><span class="n">Tensor</span><span class="w"> </span><span class="n">float_tensor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">source_tensor</span><span class="p">.</span><span class="n">to</span><span class="p">(</span><span class="n">torch</span><span class="o">::</span><span class="n">kFloat32</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="admonition attention">
+<p class="admonition-title">注意</p>
+<p>转换的结果， <code class="docutils literal "><span class="pre">float_tensor</span></code> ，是一个指向新内存的新张量，与源 <code class="docutils literal "><span class="pre">source_tensor</span></code> 无关。</p>
+</div>
+<p>然后，我们可以将其从 CPU 内存移动到 GPU 内存：</p>
+<div class="highlight-cpp "><div class="highlight"><pre><span></span><span class="n">torch</span><span class="o">::</span><span class="n">Tensor</span><span class="w"> </span><span class="n">gpu_tensor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">float_tensor</span><span class="p">.</span><span class="n">to</span><span class="p">(</span><span class="n">torch</span><span class="o">::</span><span class="n">kCUDA</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>如果你有多个 CUDA 设备可用，上述代码将把张量复制到默认的 CUDA 设备，你可以通过 <code class="docutils literal "><span class="pre">torch::DeviceGuard</span></code> 来配置它。如果没有 <code class="docutils literal "><span class="pre">DeviceGuard</span></code> ，这将默认为 GPU 1。如果你想指定不同的 GPU 索引，你可以将其传递给 <code class="docutils literal "><span class="pre">Device</span></code> 构造函数：</p>
+<div class="highlight-cpp "><div class="highlight"><pre><span></span><span class="n">torch</span><span class="o">::</span><span class="n">Tensor</span><span class="w"> </span><span class="n">gpu_two_tensor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">float_tensor</span><span class="p">.</span><span class="n">to</span><span class="p">(</span><span class="n">torch</span><span class="o">::</span><span class="n">Device</span><span class="p">(</span><span class="n">torch</span><span class="o">::</span><span class="n">kCUDA</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">));</span>
+</pre></div>
+</div>
+<p>在 CPU 到 GPU 复制和反向操作的情况下，我们还可以通过将 <code class="docutils literal "><span class="pre">/*non_blocking=*/false</span></code> 作为 <code class="docutils literal "><span class="pre">to()</span></code> 的最后一个参数传递来配置内存复制为异步：</p>
+<div class="highlight-cpp "><div class="highlight"><pre><span></span><span class="n">torch</span><span class="o">::</span><span class="n">Tensor</span><span class="w"> </span><span class="n">async_cpu_tensor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gpu_tensor</span><span class="p">.</span><span class="n">to</span><span class="p">(</span><span class="n">torch</span><span class="o">::</span><span class="n">kCPU</span><span class="p">,</span><span class="w"> </span><span class="cm">/*non_blocking=*/</span><span class="nb">true</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="conclusion">
+<h2>结论 ¶</h2>
+<p>希望这篇笔记能让你对如何使用 PyTorch C++ API 以惯用方式创建和转换张量有一个良好的理解。如果你有任何进一步的问题或建议，请使用我们的论坛或 GitHub 问题来联系我们。</p>
+</section>
+</section>
+
+
+             </article>
+             
+            </div>
+            <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        下一个 <img height="16" width="16" class="next-page" src="../_static/images/chevron-right-orange.svg"> <img height="16" width="16" class="previous-page" src="../_static/images/chevron-right-orange.svg"> 上一个
+      
+    </div>
+  
+
+  
+
+    <hr>
+
+  
+
+  <div role="contentinfo">
+    <p>© 版权所有 PyTorch 贡献者。</p>
+  </div>
+    
+      <div>使用 Sphinx 构建，主题由 Read the Docs 提供。</div>
+     
+
+</footer>
+
+          </div>
+        </div>
+
+        <div class="pytorch-content-right" id="pytorch-content-right">
+          <div class="pytorch-right-menu" id="pytorch-right-menu">
+            <div class="pytorch-side-scroll" id="pytorch-side-scroll-right">
+              <ul>
+<li><a class="reference internal" href="#">张量创建 API</a><ul>
+<li><a class="reference internal" href="#factory-functions">工厂函数</a><ul>
+<li><a class="reference internal" href="#picking-a-factory-function">选择工厂函数</a></li>
+<li><a class="reference internal" href="#specifying-a-size">指定大小</a></li>
+<li><a class="reference internal" href="#passing-function-specific-parameters">传递函数特定参数</a></li>
+<li><a class="reference internal" href="#configuring-properties-of-the-tensor">配置张量的属性</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#conversion">转换</a></li>
+<li><a class="reference internal" href="#conclusion">结论</a></li>
+</ul>
+</li>
+</ul>
+
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+  
+
+
+  
+
+     
+       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+         <script src="../_static/jquery.js"></script>
+         <script src="../_static/underscore.js"></script>
+         <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+         <script src="../_static/doctools.js"></script>
+         <script src="../_static/sphinx_highlight.js"></script>
+     
+
+  
+
+  <script type="text/javascript" src="../_static/js/vendor/popper.min.js"></script>
+  <script type="text/javascript" src="../_static/js/vendor/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+  <!-- Begin Footer -->
+
+  <div class="container-fluid docs-tutorials-resources" id="docs-tutorials-resources">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4 text-center">
+          <h2>文档</h2>
+          <p>查看 PyTorch 的全面开发者文档</p>
+          <a class="with-right-arrow" href="https://pytorch.org/docs/stable/index.html">查看文档</a>
+        </div>
+
+        <div class="col-md-4 text-center">
+          <h2>教程</h2>
+          <p>深入了解初学者和高级开发者的教程</p>
+          <a class="with-right-arrow" href="https://pytorch.org/tutorials">查看教程</a>
+        </div>
+
+        <div class="col-md-4 text-center">
+          <h2>资源</h2>
+          <p>查找开发资源并获得您的疑问解答</p>
+          <a class="with-right-arrow" href="https://pytorch.org/resources">查看资源</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container footer-container">
+      <div class="footer-logo-wrapper">
+        <a href="https://pytorch.org/" class="footer-logo"></a>
+      </div>
+
+      <div class="footer-links-wrapper">
+        <div class="footer-links-col">
+          <ul>
+            <li class="list-title"><a href="https://pytorch.org/">PyTorch</a></li>
+            <li><a href="https://pytorch.org/get-started">开始使用</a></li>
+            <li><a href="https://pytorch.org/features">功能</a></li>
+            <li><a href="https://pytorch.org/ecosystem">生态系统</a></li>
+            <li><a href="https://pytorch.org/blog/">博客</a></li>
+            <li><a href="https://github.com/pytorch/pytorch/blob/master/CONTRIBUTING.md">贡献</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links-col">
+          <ul>
+            <li class="list-title"><a href="https://pytorch.org/resources">资源</a></li>
+            <li><a href="https://pytorch.org/tutorials">教程</a></li>
+            <li><a href="https://pytorch.org/docs/stable/index.html">文档</a></li>
+            <li><a href="https://discuss.pytorch.org" target="_blank">讨论</a></li>
+            <li><a href="https://github.com/pytorch/pytorch/issues" target="_blank">GitHub 问题和任务</a></li>
+            <li><a href="https://pytorch.org/assets/brand-guidelines/PyTorch-Brand-Guidelines.pdf" target="_blank">品牌指南</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links-col">
+          <ul>
+            <li class="list-title">保持更新</li>
+            <li><a href="https://www.facebook.com/pytorch" target="_blank">Facebook</a></li>
+            <li><a href="https://twitter.com/pytorch" target="_blank">推特</a></li>
+            <li><a href="https://www.youtube.com/pytorch" target="_blank">YouTube</a></li>
+            <li><a href="https://www.linkedin.com/company/pytorch" target="_blank">领英</a></li>
+          </ul>  
+          </div>
+
+        <div class="footer-links-col">
+          <ul>
+            <li class="list-title">PyTorch 播客</li>
+            <li><a href="https://open.spotify.com/show/6UzHKeiy368jKfQMKKvJY5" target="_blank">Spotify</a></li>
+            <li><a href="https://podcasts.apple.com/us/podcast/pytorch-developer-podcast/id1566080008" target="_blank">苹果</a></li>
+            <li><a href="https://www.google.com/podcasts?feed=aHR0cHM6Ly9mZWVkcy5zaW1wbGVjYXN0LmNvbS9PQjVGa0lsOA%3D%3D" target="_blank">谷歌</a></li>
+            <li><a href="https://music.amazon.com/podcasts/7a4e6f0e-26c2-49e9-a478-41bd244197d0/PyTorch-Developer-Podcast?" target="_blank">亚马逊</a></li>
+          </ul>
+         </div>
+        </div>
+        
+        <div class="privacy-policy">
+          <ul>
+            <li class="privacy-policy-links"><a href="https://www.linuxfoundation.org/terms/" target="_blank">条款</a></li>
+            <li class="privacy-policy-links">|</li>
+            <li class="privacy-policy-links"><a href="https://www.linuxfoundation.org/privacy-policy/" target="_blank">隐私</a></li>
+          </ul>
+        </div>
+        <div class="copyright">
+        <p>© 版权所有 Linux 基金会。PyTorch 基金会是 Linux 基金会的一个项目。有关本网站的使用条款、商标政策以及其他适用于 PyTorch 基金会的政策，请参阅 www.linuxfoundation.org/policies/。PyTorch 基金会支持 PyTorch 开源项目，该项目已被确立为 LF Projects, LLC 的 PyTorch 项目系列。有关适用于 PyTorch 项目系列 LF Projects, LLC 的政策，请参阅 www.lfprojects.org/policies/。</p>
+      </div>
+     </div>
+
+  </footer>
+
+  <div class="cookie-banner-wrapper">
+  <div class="container">
+    <p class="gdpr-notice">为了分析流量并优化您的体验，我们在本网站上提供 cookie。通过点击或导航，您同意允许我们使用 cookie。作为本网站的当前维护者，Facebook 的 cookie 政策适用。了解更多信息，包括可用的控制选项：cookie 政策。</p>
+    <img class="close-button" src="../_static/images/pytorch-x.svg" width="16" height="16">
+  </div>
+</div>
+
+  <!-- End Footer -->
+
+  <!-- Begin Mobile Menu -->
+
+  <div class="mobile-main-menu">
+    <div class="container-fluid">
+      <div class="container">
+        <div class="mobile-main-menu-header-container">
+          <a class="header-logo" href="https://pytorch.org/" aria-label="PyTorch"></a>
+          <a class="main-menu-close-button" href="#" data-behavior="close-mobile-menu"></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="mobile-main-menu-links-container">
+      <div class="main-menu">
+        <ul>
+           <li class="resources-mobile-menu-title">
+             <a>学习</a>
+           </li>
+           <ul class="resources-mobile-menu-items">
+             <li>
+               <a href="https://pytorch.org/get-started">开始使用</a>
+             </li>
+             <li>
+               <a href="https://pytorch.org/tutorials">教程</a>
+             </li>
+             <li>
+               <a href="https://pytorch.org/tutorials/beginner/basics/intro.html">学习基础知识</a>
+             </li>
+             <li>
+               <a href="https://pytorch.org/tutorials/recipes/recipes_index.html">PyTorch 菜谱</a>
+             </li>
+             <li>
+               <a href="https://pytorch.org/tutorials/beginner/introyt.html">PyTorch 入门 - YouTube 系列</a>
+             </li>
+           </ul>
+           <li class="resources-mobile-menu-title">
+             <a>生态系统</a>
+           </li>
+           <ul class="resources-mobile-menu-items">
+             <li>
+               <a href="https://pytorch.org/ecosystem">工具</a>
+             </li>
+             <li>
+               <a href="https://pytorch.org/#community-module">社区</a>
+             </li>
+             <li>
+               <a href="https://discuss.pytorch.org/">论坛</a>
+             </li>
+             <li>
+               <a href="https://pytorch.org/resources">开发者资源</a>
+             </li>
+             <li>
+               <a href="https://pytorch.org/ecosystem/contributor-awards-2023">贡献者奖项 - 2024</a>
+             </li>
+           </ul>
+
+           <li class="resources-mobile-menu-title">
+             <a>Edge</a>
+           </li>
+
+           <ul class="resources-mobile-menu-items">
+             <li>
+               <a href="https://pytorch.org/edge">关于 PyTorch Edge</a>
+             </li>
+             
+             <li>
+               <a href="https://pytorch.org/executorch-overview">执行火炬</a>
+             </li>
+             <li>
+               <a href="https://pytorch.org/executorch/stable/index.html">ExecuTorch 文档</a>
+             </li>
+           </ul>
+
+           <li class="resources-mobile-menu-title">
+             <a>文档</a>
+           </li>
+
+           <ul class="resources-mobile-menu-items">
+            <li>
+              <a href="https://pytorch.org/docs/stable/index.html">PyTorch</a>
+            </li>
+
+            <li>
+              <a href="https://pytorch.org/pytorch-domains">PyTorch 领域</a>
+            </li>
+          </ul>
+
+          <li class="resources-mobile-menu-title">
+            <a>博客 &amp; 新闻</a>
+          </li>
+            
+           <ul class="resources-mobile-menu-items">
+            <li>
+              <a href="https://pytorch.org/blog/">PyTorch 博客</a>
+            </li>
+            <li>
+              <a href="https://pytorch.org/community-blog">社区博客</a>
+            </li>
+
+            <li>
+              <a href="https://pytorch.org/videos">视频</a>
+            </li>
+
+            <li>
+              <a href="https://pytorch.org/community-stories">社区故事</a>
+            </li>
+            <li>
+              <a href="https://pytorch.org/events">活动</a>
+            </li>
+            <li>
+               <a href="https://pytorch.org/newsletter">通讯</a>
+             </li>
+          </ul>
+          
+          <li class="resources-mobile-menu-title">
+            <a>关于</a>
+          </li>
+
+          <ul class="resources-mobile-menu-items">
+            <li>
+              <a href="https://pytorch.org/foundation">PyTorch 基金会</a>
+            </li>
+            <li>
+              <a href="https://pytorch.org/governing-board">治理委员会</a>
+            </li>
+            <li>
+               <a href="https://pytorch.org/credits">云信用计划</a>
+            </li>
+            <li>
+               <a href="https://pytorch.org/tac">技术顾问委员会</a>
+            </li>
+            <li>
+               <a href="https://pytorch.org/staff">员工</a>
+            </li>
+            <li>
+               <a href="https://pytorch.org/contact-us">联系我们</a>
+            </li>
+          </ul>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- End Mobile Menu -->
+
+  <script type="text/javascript" src="../_static/js/vendor/anchor.min.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+      mobileMenu.bind();
+      mobileTOC.bind();
+      pytorchAnchors.bind();
+      sideMenus.bind();
+      scrollToAnchor.bind();
+      highlightNavigation.bind();
+      mainMenuDropdown.bind();
+      filterTags.bind();
+
+      // Add class to links that have code blocks, since we cannot create links in code blocks
+      $("article.pytorch-article a span.pre").each(function(e) {
+        $(this).closest("a").addClass("has-code");
+      });
+    })
+  </script>
+
+</body></html>
